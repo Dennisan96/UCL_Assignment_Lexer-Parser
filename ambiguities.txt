@@ -1,0 +1,27 @@
+There were many ambiguities when we first compile the program. 
+
+Almost every ambiguities problems have been solved before this instruction reached, so I couldn't remember them very well. The following ambiguities problem is a part of it:
+
+1. expression:
+	I define many grammar that have non-terminal "expression" nested inside. That cause a lot of problem. Initially, I put most a bunch of different expression inside the expression, so I used many "|" to separate them. That actually cause a lot of problem. As some of the production also contains one or more "expression"s, that result many shift/reduce problem. I can't remember the exactly grammar I was used. But it is something like " expression ::= expression + expression | (expression) | expression * expression " and so on.
+
+	The way I solve the shift/reduce conflicts is to add more non-terminal to make the production (the opposite direction in bottom-up parsing) only can go in one way. Different expression have different "entrance" that will finally lead to "expression", the order are oriented by the precedence. 
+
+2. typedef allowed both outside and inside the main function, but fdef only allowed outside of main. 
+	Initially the grammar only allow statement inside the main function, outside is represented by "declaration_list_opt", which contains variable declaration, function declaration and tdef declaration. 
+	To allow tdef inside the main I need to add a new non-terminal that contains both statement and tdef. So I created "block_statement_opt". That cause reduce/reduce problems. 
+
+	The way I resolve this problem is simply delete the duplicate non-terminal "statement_list_opt" to replace with "block_statement_opt"
+
+3. assignment_statement
+	In non_terminal "assignment_statement", the original statement was written as "assignment_statement ::= varible_name ASSIGN expression_list.... | varible_name dic_seq_access ASSIGN expression_list.." this cause the problem of ambuiguity. 
+
+	The way I solve this problem is to implements the non-terminal " left_hand_side " and make "assignment_statement" have only one production rule. 
+
+4. If_statement
+	As in a if statement we can have multiple elseif statement. The first version of this production is if statement followed by a lot of elseif statement or else statement, this caused reduce/shift problem at first.
+
+	The way I solve this problem is to introduce non terminal elseif_statement_list_opt and else_statement_opt, to make if statement only have one production rule. 
+
+
+
